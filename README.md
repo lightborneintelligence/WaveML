@@ -1,4 +1,4 @@
-# WaveML-JAX  
+# WaveML  
 ### Error Rectification by Alignment (ERA) — Reference Implementation
 
 **Lightborne Intelligence**
@@ -53,7 +53,7 @@ Domain-specific calibration, operating envelopes, and production integrations ar
 ## Repository Structure
 
 ```
-waveml-jax/
+waveml/
 
 ├── core/
 
@@ -118,7 +118,7 @@ Rather than suppressing or filtering states, ERA **realigns** them to the neares
 
 ## Intended Use
 
-WaveML-JAX is intended for:
+WaveML is intended for:
 
 - Research into robustness and stability
 - Evaluation of wave-native representations
