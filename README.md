@@ -53,7 +53,7 @@ Domain-specific calibration, operating envelopes, and production integrations ar
 ## Repository Structure
 
 ```
-waveml_jax/
+waveml-jax/
 
 ├── core/
 
