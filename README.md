@@ -9,7 +9,7 @@
 
 ## Overview
 
-WaveML-JAX is a **reference implementation** of *Error Rectification by Alignment (ERA)*, a governance mechanism for wave-native learning systems.
+WaveML is a **reference implementation** of *Error Rectification by Alignment (ERA)*, a governance mechanism for wave-native learning systems.
 
 ERA enforces physically meaningful invariants on internal model states—**amplitude, energy, and phase**—to ensure bounded trajectories and graceful degradation under noise, drift, and long-horizon propagation.
 
@@ -53,7 +53,7 @@ Domain-specific calibration, operating envelopes, and production integrations ar
 ## Repository Structure
 
 ```
-waveml/
+WaveML/
 
 ├── core/
 
