@@ -54,19 +54,19 @@ Domain-specific calibration, operating envelopes, and production integrations ar
 
 waveml-jax/
 ├── core/
-│   ├── representation.py   # WaveState (amplitude, phase)
-│   ├── invariants.py       # ERA bounds
-│   └── era_rectify.py      # Rectification operator
+│   ├── representation.py    # WaveState (amplitude, phase)
+│   ├── invariants.py        # ERA bounds and invariants
+│   └── era_rectify.py       # Rectification operator
 │
 ├── models/
-│   ├── waveseq.py          # Wave-native sequence model
-│   ├── wave_rf.py          # Wave-native RF reference model
-│   └── baselines.py        # Standard RNN / CNN baselines
+│   ├── waveseq.py           # Wave-native sequence model
+│   ├── wave_rf.py           # Wave-native RF reference model
+│   └── baselines.py         # Standard RNN / CNN baselines
 │
 ├── benchmarks/
-│   ├── delayed_copy.py     # Long-horizon stress test
-│   ├── noise_sweep.py      # Noise robustness evaluation
-│   └── snr_sweep.py        # RF SNR degradation tests
+│   ├── delayed_copy.py      # Long-horizon stress test
+│   ├── noise_sweep.py       # Noise robustness evaluation
+│   └── snr_sweep.py         # RF SNR degradation tests
 │
 ├── examples/
 │   ├── toy_sequence.py
@@ -76,6 +76,7 @@ waveml-jax/
 │   ├── ERA_governance.md
 │   └── limitations.md
 │
+├── LICENSE
 └── README.md
 
 ---
