@@ -1,92 +1,41 @@
 # “””
-WaveML Core Module
+WaveML-JAX: Wave-Native Machine Learning
 
 Lightborne Intelligence
 
-Core components for wave-native computing:
+Error Rectification by Alignment (ERA) - Reference Implementation
 
-- representation: WaveState, encoding/decoding
-- invariants: Bounds and stability metrics
-- era_rectify: Error Rectification by Alignment
-  “””
+A pure functional implementation of wave-native computing in JAX.
 
-from .representation import (
+Usage:
+from waveml_jax.core import WaveState, era_rectify, DEFAULT_BOUNDS
+from waveml_jax.models import WaveSeq, WaveSeqParams
+from waveml_jax.benchmarks import run_benchmark
+
+The wave IS the computation.
+“””
+
+**version** = “1.0.0”
+**author** = “Lightborne Intelligence”
+**license** = “Apache-2.0”
+
+# Convenient top-level imports
+
+from .core import (
 WaveState,
-to_complex,
-from_complex,
-to_real,
-from_real,
-encode_fft,
-decode_fft,
-energy,
-total_energy,
-phase_coherence,
-zeros,
-ones,
-random,
-)
-
-from .invariants import (
-OMEGA,
-InvariantBounds,
+era_rectify,
 DEFAULT_BOUNDS,
 TIGHT_BOUNDS,
 LOOSE_BOUNDS,
-measure_stability,
-is_stable,
-amplitude_violation_loss,
-energy_violation_loss,
-invariant_loss,
-scale_bounds,
-bounds_for_n_modes,
-)
-
-from .era_rectify import (
-era_rectify,
-era_rectify_soft,
-era_rectify_with_stats,
-rectify_amplitude,
-rectify_energy,
-rectify_phase,
-era_chain,
-era_scan,
+InvariantBounds,
 )
 
 **all** = [
-# Representation
 ‘WaveState’,
-‘to_complex’,
-‘from_complex’,
-‘to_real’,
-‘from_real’,
-‘encode_fft’,
-‘decode_fft’,
-‘energy’,
-‘total_energy’,
-‘phase_coherence’,
-‘zeros’,
-‘ones’,
-‘random’,
-# Invariants
-‘OMEGA’,
-‘InvariantBounds’,
+‘era_rectify’,
 ‘DEFAULT_BOUNDS’,
 ‘TIGHT_BOUNDS’,
 ‘LOOSE_BOUNDS’,
-‘measure_stability’,
-‘is_stable’,
-‘amplitude_violation_loss’,
-‘energy_violation_loss’,
-‘invariant_loss’,
-‘scale_bounds’,
-‘bounds_for_n_modes’,
-# ERA
-‘era_rectify’,
-‘era_rectify_soft’,
-‘era_rectify_with_stats’,
-‘rectify_amplitude’,
-‘rectify_energy’,
-‘rectify_phase’,
-‘era_chain’,
-‘era_scan’,
+‘InvariantBounds’,
+‘**version**’,
 ]
