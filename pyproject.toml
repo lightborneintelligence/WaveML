@@ -1,41 +1,124 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = [“hatchling”]
+build-backend = “hatchling.build”
 
 [project]
-name = "waveml-jax"
-version = "0.1.0"
-description = "Wave-native machine learning primitives with Error Rectification by Alignment (ERA)"
-readme = "README.md"
-requires-python = ">=3.9"
-license = { file = "LICENSE" }
+name = “waveml-jax”
+version = “1.0.0”
+description = “Wave-native learning primitives governed by Error Rectification by Alignment (ERA). Reference implementation in JAX.”
+readme = “README.md”
+license = {text = “Apache-2.0”}
 authors = [
-    { name = "Lightborne Intelligence" }
+{name = “Jesus Carrasco”, email = “perry@lightborneintelligence.com”},
 ]
-
+maintainers = [
+{name = “Lightborne Intelligence”, email = “contact@lightborneintelligence.com”},
+]
 keywords = [
-    "wave-native",
-    "era",
-    "robustness",
-    "sequence-modeling",
-    "signal-processing",
-    "jax"
+“machine-learning”,
+“deep-learning”,
+“jax”,
+“wave-native”,
+“signal-processing”,
+“era”,
+“neural-networks”,
+“robustness”,
+]
+classifiers = [
+“Development Status :: 4 - Beta”,
+“Intended Audience :: Science/Research”,
+“Intended Audience :: Developers”,
+“License :: OSI Approved :: Apache Software License”,
+“Operating System :: OS Independent”,
+“Programming Language :: Python :: 3”,
+“Programming Language :: Python :: 3.9”,
+“Programming Language :: Python :: 3.10”,
+“Programming Language :: Python :: 3.11”,
+“Programming Language :: Python :: 3.12”,
+“Topic :: Scientific/Engineering :: Artificial Intelligence”,
+“Topic :: Scientific/Engineering :: Physics”,
+“Topic :: Software Development :: Libraries :: Python Modules”,
+]
+requires-python = “>=3.9”
+dependencies = [
+“jax>=0.4.20”,
+“jaxlib>=0.4.20”,
+“flax>=0.8.0”,
+“optax>=0.1.7”,
+“numpy>=1.24.0”,
 ]
 
-dependencies = [
-    "jax",
-    "jaxlib",
-    "optax",
-    "flax"
+[project.optional-dependencies]
+dev = [
+“pytest>=7.0.0”,
+“pytest-cov>=4.0.0”,
+“black>=23.0.0”,
+“isort>=5.12.0”,
+“mypy>=1.0.0”,
+]
+docs = [
+“sphinx>=6.0.0”,
+“sphinx-rtd-theme>=1.2.0”,
+“myst-parser>=1.0.0”,
+]
+all = [
+“waveml-jax[dev,docs]”,
 ]
 
 [project.urls]
-Homepage = "https://github.com/lightborneintelligence/WaveML"
-Repository = "https://github.com/lightborneintelligence/WaveML"
-Issues = "https://github.com/lightborneintelligence/WaveML/issues"
+Homepage = “https://github.com/lightborneintelligence/WaveML”
+Documentation = “https://github.com/lightborneintelligence/WaveML#readme”
+Repository = “https://github.com/lightborneintelligence/WaveML.git”
+Issues = “https://github.com/lightborneintelligence/WaveML/issues”
+Changelog = “https://github.com/lightborneintelligence/WaveML/releases”
 
-[tool.setuptools]
-packages = ["waveml_jax"]
+[tool.hatch.build.targets.sdist]
+include = [
+“/core”,
+“/models”,
+“/benchmarks”,
+“/**init**.py”,
+“/README.md”,
+“/LICENSE”,
+]
 
-[tool.setuptools.package-data]
-waveml_jax = ["**/*.py"]
+[tool.hatch.build.targets.wheel]
+packages = [”.”]
+
+[tool.black]
+line-length = 100
+target-version = [“py39”, “py310”, “py311”, “py312”]
+include = ‘.pyi?$’
+exclude = ‘’’
+/(
+.git
+| .hg
+| .mypy_cache
+| .tox
+| .venv
+| _build
+| buck-out
+| build
+| dist
+)/
+‘’’
+
+[tool.isort]
+profile = “black”
+line_length = 100
+known_first_party = [“waveml_jax”]
+
+[tool.mypy]
+python_version = “3.9”
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = [“tests”]
+python_files = [“test_*.py”]
+python_functions = [“test_*”]
+addopts = “-v –tb=short”
+filterwarnings = [
+“ignore::DeprecationWarning”,
+]
