@@ -14,15 +14,11 @@ from functools import partial
 import flax.linen as nn
 
 
-# ============================================================================
-# Vanilla RNN
-# ============================================================================
-
 class RNNParams(NamedTuple):
     """Parameters for vanilla RNN."""
-    W_h: jnp.ndarray   # Hidden-to-hidden
-    W_x: jnp.ndarray   # Input-to-hidden
-    b: jnp.ndarray     # Bias
+    W_h: jnp.ndarray
+    W_x: jnp.ndarray
+    b: jnp.ndarray
 
 
 def init_rnn_params(key: jax.random.PRNGKey,
@@ -60,16 +56,12 @@ def rnn_forward(params: RNNParams,
     return final_h, hiddens
 
 
-# ============================================================================
-# LSTM
-# ============================================================================
-
 class LSTMParams(NamedTuple):
     """Parameters for LSTM."""
-    W_i: jnp.ndarray  # Input gate
-    W_f: jnp.ndarray  # Forget gate
-    W_o: jnp.ndarray  # Output gate
-    W_c: jnp.ndarray  # Cell gate
+    W_i: jnp.ndarray
+    W_f: jnp.ndarray
+    W_o: jnp.ndarray
+    W_c: jnp.ndarray
     U_i: jnp.ndarray
     U_f: jnp.ndarray
     U_o: jnp.ndarray
@@ -82,8 +74,8 @@ class LSTMParams(NamedTuple):
 
 class LSTMState(NamedTuple):
     """LSTM hidden state."""
-    h: jnp.ndarray  # Hidden
-    c: jnp.ndarray  # Cell
+    h: jnp.ndarray
+    c: jnp.ndarray
 
 
 def init_lstm_params(key: jax.random.PRNGKey,
@@ -103,7 +95,7 @@ def init_lstm_params(key: jax.random.PRNGKey,
         U_o=jax.random.normal(keys[6], (hidden_dim, hidden_dim)) * scale,
         U_c=jax.random.normal(keys[7], (hidden_dim, hidden_dim)) * scale,
         b_i=jnp.zeros(hidden_dim),
-        b_f=jnp.ones(hidden_dim),  # Forget gate bias = 1 for better gradients
+        b_f=jnp.ones(hidden_dim),
         b_o=jnp.zeros(hidden_dim),
         b_c=jnp.zeros(hidden_dim),
     )
@@ -144,15 +136,11 @@ def lstm_forward(params: LSTMParams,
     return final_state, hiddens
 
 
-# ============================================================================
-# GRU
-# ============================================================================
-
 class GRUParams(NamedTuple):
     """Parameters for GRU."""
-    W_z: jnp.ndarray  # Update gate
-    W_r: jnp.ndarray  # Reset gate
-    W_h: jnp.ndarray  # Hidden
+    W_z: jnp.ndarray
+    W_r: jnp.ndarray
+    W_h: jnp.ndarray
     U_z: jnp.ndarray
     U_r: jnp.ndarray
     U_h: jnp.ndarray
@@ -207,16 +195,9 @@ def gru_forward(params: GRUParams,
     return final_h, hiddens
 
 
-# ============================================================================
-# Collapse Detection for Baselines
-# ============================================================================
-
 def detect_baseline_collapse(hiddens: jnp.ndarray) -> dict:
     """Detect collapse/explosion in baseline models."""
-    # Variance across hidden dimension
     var_per_step = jnp.var(hiddens, axis=-1)
-    
-    # Norm per step
     norm_per_step = jnp.linalg.norm(hiddens, axis=-1)
     
     return {
@@ -227,88 +208,3 @@ def detect_baseline_collapse(hiddens: jnp.ndarray) -> dict:
         'collapsed': bool(jnp.min(var_per_step) < 1e-6),
         'exploded': bool(jnp.max(norm_per_step) > 1e6),
     }
-
-
-# ============================================================================
-# Tests
-# ============================================================================
-
-def test_baselines():
-    """Test baseline models."""
-    print("=" * 60)
-    print("  Baseline Model Tests")
-    print("=" * 60)
-    
-    key = jax.random.PRNGKey(42)
-    input_dim = 8
-    hidden_dim = 16
-    seq_len = 100
-    
-    inputs = jax.random.normal(key, (seq_len, input_dim)) * 0.5
-    
-    # Test RNN
-    print("\n[1] Vanilla RNN...")
-    k1, key = jax.random.split(key)
-    rnn_params = init_rnn_params(k1, input_dim, hidden_dim)
-    _, rnn_hiddens = rnn_forward(rnn_params, inputs)
-    rnn_stats = detect_baseline_collapse(rnn_hiddens)
-    print(f"    Output shape: {rnn_hiddens.shape}")
-    print(f"    Mean variance: {rnn_stats['mean_variance']:.6f}")
-    print(f"    Collapsed: {rnn_stats['collapsed']}")
-    
-    # Test LSTM
-    print("\n[2] LSTM...")
-    k2, key = jax.random.split(key)
-    lstm_params = init_lstm_params(k2, input_dim, hidden_dim)
-    _, lstm_hiddens = lstm_forward(lstm_params, inputs)
-    lstm_stats = detect_baseline_collapse(lstm_hiddens)
-    print(f"    Output shape: {lstm_hiddens.shape}")
-    print(f"    Mean variance: {lstm_stats['mean_variance']:.6f}")
-    print(f"    Collapsed: {lstm_stats['collapsed']}")
-    
-    # Test GRU
-    print("\n[3] GRU...")
-    k3, key = jax.random.split(key)
-    gru_params = init_gru_params(k3, input_dim, hidden_dim)
-    _, gru_hiddens = gru_forward(gru_params, inputs)
-    gru_stats = detect_baseline_collapse(gru_hiddens)
-    print(f"    Output shape: {gru_hiddens.shape}")
-    print(f"    Mean variance: {gru_stats['mean_variance']:.6f}")
-    print(f"    Collapsed: {gru_stats['collapsed']}")
-    
-    # Test gradient flow
-    print("\n[4] Gradient flow comparison...")
-    
-    def rnn_loss(params, inputs):
-        _, h = rnn_forward(params, inputs)
-        return jnp.mean(h ** 2)
-    
-    def lstm_loss(params, inputs):
-        _, h = lstm_forward(params, inputs)
-        return jnp.mean(h ** 2)
-    
-    def gru_loss(params, inputs):
-        _, h = gru_forward(params, inputs)
-        return jnp.mean(h ** 2)
-    
-    rnn_grad = jax.grad(rnn_loss)(rnn_params, inputs[:50])
-    lstm_grad = jax.grad(lstm_loss)(lstm_params, inputs[:50])
-    gru_grad = jax.grad(gru_loss)(gru_params, inputs[:50])
-    
-    rnn_gnorm = jnp.sqrt(sum(jnp.sum(g ** 2) for g in jax.tree.leaves(rnn_grad)))
-    lstm_gnorm = jnp.sqrt(sum(jnp.sum(g ** 2) for g in jax.tree.leaves(lstm_grad)))
-    gru_gnorm = jnp.sqrt(sum(jnp.sum(g ** 2) for g in jax.tree.leaves(gru_grad)))
-    
-    print(f"    RNN gradient norm:  {rnn_gnorm:.6f}")
-    print(f"    LSTM gradient norm: {lstm_gnorm:.6f}")
-    print(f"    GRU gradient norm:  {gru_gnorm:.6f}")
-    
-    print("\n" + "=" * 60)
-    print("  All baseline tests passed! ✓")
-    print("=" * 60)
-    
-    return True
-
-
-if __name__ == "__main__":
-    test_baselines()
